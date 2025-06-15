@@ -18,10 +18,15 @@ const server = http.createServer (async (req, res) => {
         }
     }
     else if (pathUrl === "/about") {
-        const jsonContent = await fs.readFile ("user.json", "utf-8");
 
-        res.writeHead (200, {"Content-Type": "application/json"});
-        res.end (jsonContent);
+        try {
+            const jsonContent = await fs.readFile ("user.json", "utf-8");
+
+            res.writeHead (200, {"Content-Type": "application/json"});
+            res.end (jsonContent);
+        } catch (error) {
+            res.end ("Something went wrong:", error.message);
+        }
     }
     else {
         const errorFound = await fs.readFile ("error.html", "utf-8");
