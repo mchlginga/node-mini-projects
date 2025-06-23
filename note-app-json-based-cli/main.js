@@ -1,5 +1,6 @@
 const path = require ("path");
 const fs = require ("fs/promises");
+const logger = require ("./logger/logger.js");
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -46,6 +47,7 @@ const addNote = async () => {
         // then push
         notes.push(newNote);
         await fs.writeFile (noteFile, JSON.stringify(notes, null, 2));
+        await logger(`Added note: ${title}`);
 
         // and print
         console.log("Note " + title + " added!");
