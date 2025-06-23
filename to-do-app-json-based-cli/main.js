@@ -1,5 +1,6 @@
 const path = require ("path");
 const fs = require ("fs/promises");
+const log = require ("./logger/logger.js");
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -45,6 +46,7 @@ const addTask = async () => {
 
         await fs.writeFile(todoFile, JSON.stringify(todos, null, 2));
         console.log("Task: " + title + " added!");
+        await log();
     } catch (error) {
         console.log("Error creating To-Do:", error.message);
     }
@@ -66,6 +68,7 @@ const isCompeleted = async () => {
         await fs.writeFile (todoFile, JSON.stringify(todos, null, 2));
 
         console.log ("Marked as compeleted!");
+        await log();
     } catch (error) {
         console.log("Error completing task.", error.message);
     }
@@ -94,6 +97,7 @@ const listTask = async () => {
             console.log ((index + 1) + ". " + todo.title + " - " + status);
         });
         console.log ("=".repeat(30));
+        await log();
 
     } catch (error) {
         console.log ("Error retrieving tasks:", error.message);
@@ -118,6 +122,7 @@ const deleteTask = async () => {
 
         // print data
         console.log ("Deleted " + title + " successfully!");
+        await log();
     } catch (error) {
         console.log ("Error deleting task:", error.message)
     }
