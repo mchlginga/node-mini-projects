@@ -37,7 +37,7 @@ const addTask = async () => {
         const newTask = {
             id: Date.now(),
             title,
-            complete: false
+            completed: false
         }
 
         todos.push(newTask);
@@ -70,12 +70,44 @@ const isCompeleted = async () => {
     }
 }
 
+const listTask = async () => {
+    try {
+        await ensureTodoDir();
+        // get data,
+        const todos = JSON.parse(await fs.readFile(todoFile, "utf-8"));
+
+        // print
+        console.log ("=".repeat(30));
+        console.log ("List of Tasks:");
+        console.log ("-".repeat(30));
+
+/*         let count = 1;
+        for (let todo of todos) {
+            const status = todo.completed ? "true" : "false";
+            console.log (count + ". " + todo.title + " - " + status);
+            count++;
+        } */
+
+        todos.forEach ((todo, index) => {
+            const status = todo.completed ? "true" : "false";
+            console.log ((index + 1) + ". " + todo.title + " - " + status);
+        });
+        console.log ("=".repeat(30));
+
+    } catch (error) {
+        console.log ("Error retrieving tasks:", error.message);
+    }
+}
+
 switch (command) {
     case "add":
         addTask();
         break;
     case "completed":
         isCompeleted();
+        break;
+    case "list":
+        listTask();
         break;
     default:
         console.log ("Invalid command!");
