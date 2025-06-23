@@ -18,7 +18,7 @@ const ensureTodoDir = async () => {
 }
 
 const newTitle = (t) => {
-    t.trim().toLowerCase();
+    return t.trim().toLowerCase();
 }
 
 const addTask = async () => {
@@ -30,7 +30,8 @@ const addTask = async () => {
         // read and check,
         const exist = todos.find(todo => newTitle(todo.title) === newTitle(title));
         if (exist) {
-            console.lo
+            console.log("Task already exist!");
+            return;
         }
 
         // add,
@@ -87,7 +88,7 @@ const listTask = async () => {
             console.log (count + ". " + todo.title + " - " + status);
             count++;
         } */
-
+        console.log("Number of tasks: " + todos.length);
         todos.forEach ((todo, index) => {
             const status = todo.completed ? "true" : "false";
             console.log ((index + 1) + ". " + todo.title + " - " + status);
@@ -96,6 +97,29 @@ const listTask = async () => {
 
     } catch (error) {
         console.log ("Error retrieving tasks:", error.message);
+    }
+}
+
+const deleteTask = async () => {
+    try {
+        await ensureTodoDir();
+        // get data
+        const todos = JSON.parse(await fs.readFile(todoFile, "utf-8"));
+
+        // filter and check
+        const filtered = todos.filter(todo => newTitle(todo.title) !== newTitle(title));
+        if (filtered.length === todos.length) {
+            console.log ("No tasks found to delete.");
+            return;
+        }
+
+        // rewrite data
+        await fs.writeFile (todoFile, JSON.stringify(filtered, null, 2));
+
+        // print data
+        console.log ("Deleted " + title + " successfully!");
+    } catch (error) {
+        console.log ("Error deleting task:", error.message)
     }
 }
 
@@ -108,6 +132,9 @@ switch (command) {
         break;
     case "list":
         listTask();
+        break;
+    case "delete":
+        deleteTask();
         break;
     default:
         console.log ("Invalid command!");
