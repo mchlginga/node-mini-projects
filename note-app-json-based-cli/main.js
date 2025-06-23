@@ -20,7 +20,7 @@ const ensureNoteDir = async () => {
 }
 
 const newTitle = (t) => {
-    t.trim().toLowerCase();
+    return t.trim().toLowerCase();
 }
 
 const addNote = async () => {
