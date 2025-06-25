@@ -1,36 +1,22 @@
 # CRUD JSON API using Pure HTTP
 
-- Building a simple API using pure Node.js http module, fs, path - no express.
+- Building a REST-style API without using Express - pure http, fs/promises, path. We will simulate behavior of a real server:routing, body parsing, dynamic URLs, proper status codes.
 
-Goal:
+- Each note will be stored in a notes.json file with structure like:
 
-- GET       /notes > get all notes
-- POST      /notes > add a new note
-- PUT       /notes/:id > update note by id
-- DELETE    /notes/:id > delete note by id
-
-Use cases:
-
-- Practicing REST principles
-- Handling routes manually
-- Preparing for middleware and route handling for Express
-
-Concepts you'll apply:
-
-- req.method, req.url req.on ('data')
-- fs.readFile / writeFile
-- status codes
-- JSON.parse / JSON.stringify
+{ 
+    "id": 23123,
+    "title": "Grocery",
+    "body": "Buy milk and eggs"
+}
 
 ---
 
 ## Code Flow
 
-1. Create notes.json (empty)
-2. Start http server
-3. Inside server:
-    - Parse URL
-    - Match method + path
-    - For POST/PUT, collect body via data event
-    - Do logic: read/write to notes.json
-    - Return JSON response
+1. Create HTTP server.
+2. Parse request URL and method (GET, POST, PUT, DELETE)
+3. Setup dynamic routing with url.pathname and url.searchParams
+4. For POST/PUT, manually parse request body (JSON)
+5. Read notes.json, manipulate data, and respond
+6. Set proper headers: Content-Type, statusCode
