@@ -25,4 +25,4 @@
 
 ## Note
 
-- CRUD JSON API using Pure HTTP projects will be moved to separate repositories for better organization.
+- CRUD JSON API using Pure HTTP will be moved to separate repositories for better organization.
