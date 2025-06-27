@@ -1,37 +1,37 @@
-const path = require ("path");
-const fs = require ("fs/promises");
+const path = require("path");
+const fs = require("fs/promises");
 
-const loggerDir = path.join (__dirname, "..", "logs");
-const loggerFile = path.join (loggerDir, "log.txt");
+const logDir = path.join(__dirname, "..", "logs");
+const logFile = path.join(logDir, "logs.txt");
 
-const ensureLoggerFile = async () => {
+const ensureLogFile = async () => {
     try {
-        await fs.access (loggerFile);
+        await fs.access(logFile);
     } catch (error) {
-        await fs.mkdir (loggerDir, {recursive: true});
-        await fs.writeFile (loggerFile, "");
+        await fs.mkdir(logDir, {recursive: true});
+        await fs.writeFile(logFile, "");
     }
-}
+};
 
 const getTimestamp = () => {
     const now = new Date();
     const date = now.toLocaleDateString("en-US");
-    const time = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit"});
+    const time = now.toLocaleTimeString("en-US", {hour: "2-digit", minute: "2-digit"});
     
     return `${date} ${time}`;
-}
+};
 
-const logger = async (m) => {
+const logger = async (message) => {
     try {
-        await ensureLoggerFile();
+        await ensureLogFile();
 
         const timestamp = getTimestamp();
-        const logMessage = `${timestamp} - ${m}\n`;
+        const logMessage = `${timestamp} - ${message}\n`;
 
-        await fs.appendFile(loggerFile, logMessage);
+        await fs.appendFile(logFile, logMessage);
     } catch (error) {
-        console.log ("Something went wrong:", error.message);
+        console.log("Something went wrong:", error.message);
     }
-}
+};
 
 module.exports = logger;

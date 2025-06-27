@@ -1,0 +1,3 @@
+6/27/2025 06:33 PM - Error serving: /about
+6/27/2025 06:34 PM - Served: / - text/html
+6/27/2025 06:34 PM - Served: /about.json - application/json
