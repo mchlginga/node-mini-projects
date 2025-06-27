@@ -20,3 +20,9 @@
 4. For POST/PUT, manually parse request body (JSON)
 5. Read notes.json, manipulate data, and respond
 6. Set proper headers: Content-Type, statusCode
+
+---
+
+## Note
+
+- CRUD JSON API using Pure HTTP projects will be moved to separate repositories for better organization.
