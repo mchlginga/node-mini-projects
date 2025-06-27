@@ -32,14 +32,14 @@ const server = http.createServer (async (req, res) => {
         const content = await fs.readFile(filePath);
 
         res.writeHead(200, {"Content-Type": contentType});
-        logger(`Served: ${req.url} - ${contentType}`);
+        await logger(`Served: ${req.url} - ${contentType}`);
 
         res.end(content);
     } catch (error) {
         const errorPage = await fs.readFile (path.join(baseFile, "error.html"));
 
         res.writeHead(404, {"content-type": "text/html"});
-        logger(`Error serving: ${req.url}`);
+        await logger(`Error serving: ${req.url}`);
 
         res.end(errorPage);
     }
