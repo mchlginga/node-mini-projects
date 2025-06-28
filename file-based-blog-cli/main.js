@@ -59,16 +59,6 @@ const readPost = async () => {
     }
 };
 
-const listPost = async () => {
-    try {
-        await ensurePostDir();
-
-        
-    } catch (error) {
-        console.log("Failed to list posts:", error.message);
-    }
-};
-
 const deletePost = async () => {
     try {
         await ensurePostDir();
@@ -90,9 +80,6 @@ switch (command) {
         break;
     case "read":
         readPost();
-        break;
-    case "list":
-        listPost();
         break;
     case "delete":
         deletePost();
