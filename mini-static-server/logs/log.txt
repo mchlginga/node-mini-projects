@@ -1,6 +1,0 @@
-6/24/2025 06:12 PM - Error serving /: log is not defined
-6/24/2025 06:13 PM - Error serving /: log is not defined
-6/24/2025 06:13 PM - Served: / (text/html)
-6/24/2025 06:13 PM - Served: /about (text/html)
-6/24/2025 06:14 PM - Error serving /aboutasd: ENOENT: no such file or directory, open 'C:\Users\y\OneDrive\Desktop\node\node-mini-projects\mini-static-server\public\aboutasd.html'
-6/24/2025 06:14 PM - Error serving /about/: ENOENT: no such file or directory, open 'C:\Users\y\OneDrive\Desktop\node\node-mini-projects\mini-static-server\public\about\.html'
