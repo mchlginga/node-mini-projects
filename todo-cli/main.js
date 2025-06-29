@@ -1,147 +1,149 @@
-const path = require ("path");
-const fs = require ("fs/promises");
-const log = require ("./logger/logger.js");
+const path = require("path");
+const fs = require("fs/promises");
+
+const logger = require("./logger/logger.js");
+
+const todoDir = path.join(__dirname, "todos");
+const todoFile = path.join(todoDir, "todos.json");
 
 const args = process.argv.slice(2);
 const command = args[0];
-const title = args [1];
+const title = args[1];
 
-const todoDir = path.join (__dirname, "todos");
-const todoFile = path.join (todoDir, "todo.json");
-
-const ensureTodoDir = async () => {
+const ensureTodoFile = async () => {
     try {
-        await fs.access (todoFile);
+        await fs.access(todoFile);
     } catch (error) {
-        await fs.mkdir (todoDir, {recursive: true});
-        await fs.writeFile (todoFile, "[]");
+        await fs.mkdir(todoDir, {recursive: true});
+        await fs.writeFile(todoFile, "[]");
     }
-}
+};
+
+const parseTodoFile = async (todoF) => {
+    try {
+        return todoF = JSON.parse(await fs.readFile(todoFile, "utf-8"));
+    } catch (error) {
+        console.log("Error parsing JSON file:", error.message);
+    }
+};
 
 const newTitle = (t) => {
-    return t.trim().toLowerCase();
-}
-
-const addTask = async () => {
     try {
-        await ensureTodoDir();
-        // get data,
-        const todos = JSON.parse(await fs.readFile (todoFile, "utf-8"));
+        return t.trim().toLowerCase().replace(/\s+/g, '-');
+    } catch (error) {
+        console.log("Error creating new title:", error.message);
+    }
+    
+};
 
-        // read and check,
-        const exist = todos.find(todo => newTitle(todo.title) === newTitle(title));
-        if (exist) {
-            console.log("Task already exist!");
+const addTodo = async (todoF) => {
+    try {
+        await ensureTodoFile();
+
+        const todos = await parseTodoFile(todoF);
+        const isDuplicate = todos.find(todo => newTitle(todo.title) === newTitle(title));
+        if (isDuplicate) {
+            console.log(`${title} is already exist.`);
             return;
         }
 
-        // add,
-        const newTask = {
+        const newTodo = {
             id: Date.now(),
             title,
             completed: false
-        }
+        };
 
-        todos.push(newTask);
+        todos.push(newTodo);
+        await fs.writeFile(todoFile, JSON.stringify(todos, null, 2));
+        await logger(`Added: ${title}`);
+
+        console.log(`Todo Added: ${title}`);
+    } catch (error) {
+        console.log("Error adding todo:", error.message);
+    }
+};
+
+const completedTodo = async (todoF) => {
+    try {
+        await ensureTodoFile();
+        
+        const todos = await parseTodoFile(todoF);
+        const todoExist = todos.findIndex(todo => newTitle(todo.title) === newTitle(title));
+        if (todoExist === -1) {
+            console.log(`${title} is not found`);
+            return;
+        }
+        
+        todos[todoExist].completed = true;
 
         await fs.writeFile(todoFile, JSON.stringify(todos, null, 2));
-        console.log("Task: " + title + " added!");
-        await log();
+        await logger(`Completed: ${title}`);
+
+        console.log(`${title} is marked as completed.`);
+        
     } catch (error) {
-        console.log("Error creating To-Do:", error.message);
+        console.log("Error completing todo:", error.message);
     }
-    
-}
+};
 
-const isCompeleted = async () => {
+const listTodo = async (todoF) => {
     try {
-        await ensureTodoDir();
-        // get data,
-        const todos = JSON.parse(await fs.readFile(todoFile, "utf-8"));
+        await ensureTodoFile();
 
-        // check,
-        const tasks = todos.find(todo => newTitle(todo.title) === newTitle(title));
-        if (!tasks) return console.log ("Task not found.");
+        const todos = await parseTodoFile(todoF);
+        let count = 1;
 
-        tasks.completed = true;
-
-        await fs.writeFile (todoFile, JSON.stringify(todos, null, 2));
-
-        console.log ("Marked as compeleted!");
-        await log();
-    } catch (error) {
-        console.log("Error completing task.", error.message);
-    }
-}
-
-const listTask = async () => {
-    try {
-        await ensureTodoDir();
-        // get data,
-        const todos = JSON.parse(await fs.readFile(todoFile, "utf-8"));
-
-        // print
-        console.log ("=".repeat(30));
-        console.log ("List of Tasks:");
-        console.log ("-".repeat(30));
-
-/*         let count = 1;
+        console.log('='.repeat(30));
+        console.log(`You have ${todos.length} To-Do`);
+        console.log('-'.repeat(30));
         for (let todo of todos) {
             const status = todo.completed ? "true" : "false";
-            console.log (count + ". " + todo.title + " - " + status);
+            console.log(`${count}. ${todo.title} - ${status}`);
+
             count++;
-        } */
-        console.log("Number of tasks: " + todos.length);
-        todos.forEach ((todo, index) => {
-            const status = todo.completed ? "true" : "false";
-            console.log ((index + 1) + ". " + todo.title + " - " + status);
-        });
-        console.log ("=".repeat(30));
-        await log();
+        };
+        console.log('='.repeat(30));
+        await logger(`List: tasks`);
 
     } catch (error) {
-        console.log ("Error retrieving tasks:", error.message);
+        console.log("Error listing todos", error.message);
     }
-}
+};
 
-const deleteTask = async () => {
+const deleteTodo = async (todoF) => {
     try {
-        await ensureTodoDir();
-        // get data
-        const todos = JSON.parse(await fs.readFile(todoFile, "utf-8"));
+        await ensureTodoFile();
 
-        // filter and check
-        const filtered = todos.filter(todo => newTitle(todo.title) !== newTitle(title));
-        if (filtered.length === todos.length) {
-            console.log ("No tasks found to delete.");
+        const todos = await parseTodoFile(todoF);
+        const filter = todos.filter(todo => newTitle(todo.title) !== newTitle(title));
+        if (filter.length === todos.length) {
+            console.log(`${title} is not exist.`);
             return;
         }
 
-        // rewrite data
-        await fs.writeFile (todoFile, JSON.stringify(filtered, null, 2));
+        await fs.writeFile(todoFile, JSON.stringify(filter, null, 2));
+        await logger(`Deleted: ${title}`);
 
-        // print data
-        console.log ("Deleted " + title + " successfully!");
-        await log();
+        console.log(`${title} is successfully deleted.`);
     } catch (error) {
-        console.log ("Error deleting task:", error.message)
+        console.log("Error deleting todo:", error.message);
     }
-}
+};
 
 switch (command) {
     case "add":
-        addTask();
+        addTodo();
         break;
     case "completed":
-        isCompeleted();
+        completedTodo();
         break;
     case "list":
-        listTask();
+        listTodo();
         break;
     case "delete":
-        deleteTask();
+        deleteTodo();
         break;
     default:
-        console.log ("Invalid command!");
+        console.log("Invalid command!");
         break;
 }
