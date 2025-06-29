@@ -106,11 +106,7 @@ const updateNote = async (n) => {
             return;
         }
 
-        notes[noteIndex] = {
-            id: notes[noteIndex].id,
-            title: notes[noteIndex].title,
-            body
-        };
+        notes[noteIndex].body;
 
         await fs.writeFile(noteFile, JSON.stringify(notes, null, 2));
         await logger(`Update: ${title}`);
