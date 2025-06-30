@@ -32,6 +32,18 @@ These projects explore core Node.js concepts:
 
 ---
 
+## Configuration
+
+Includes environment-aware configuration to some projects for practice with:
+
+- `.env` file handling
+- Environment variables  
+- Configuration patterns used in larger Node.js applications
+
+*While this simple API could work with hardcoded values, the config setup demonstrates patterns essential for production applications.*
+
+---
+
 ## Repository Update
 
 Some projects may be moved to dedicated repositories for better organization
